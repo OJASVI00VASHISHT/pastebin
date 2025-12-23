@@ -47,6 +47,8 @@ app.get("/:id", async (req, res) => {
     const document = await Document.findById(id)
 
     res.render("code-display", { code: document.value, id })
+
+    await Document.findByIdAndDelete(id)
   } catch (e) {
     res.redirect("/")
   }
