@@ -6,16 +6,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/5.0.0/autosize.min.js" integrity="sha512-zibtOTbkMuTivXGk5b8yJFGLIB1jF90NuV7gwNcVWL3xZx/I1HdkXU2pCZhadsuaS5HMUzabvRqK4WmWeKrwUg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <title>WasteBin - New Document</title>
+  <title>Skrappy | Share Code Fast</title>
 </head>
 <body>
   <form action="/save" method="POST">
     <%- include("_buttons.ejs", { canSave: true }) %>
-    
+
+    <% if (locals.errorMessage) { %>
+      <div class="error-message">
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <div class="selection-container">
+      <label for="slug">Custom URL (optional):</label>
+      <span class="url-prefix">localhost:3000/</span>
+      <input type="text" name="slug" id="slug" placeholder="random-if-empty" value="<%= locals.slug || '' %>" pattern="[a-zA-Z0-9-_]+" title="Only letters, numbers, hyphens, and underscores are allowed.">
+    </div>
+
     <div class="selection-container">
       <label for="expiry">Deletion Policy:</label>
       <select name="expiry" id="expiry">
-        <option value="burn">Burn after 2nd view</option>
+        <option value="burn" >Burn after 2nd view</option>
         <option value="1h">Expire in 1 Hour</option>
         <option value="24h">Expire in 24 Hours</option>
       </select>

@@ -54,16 +54,19 @@ textarea {
 
 .logo {
   font-family: 'Alfa Slab One', serif; 
-  font-size: 2rem;
+  font-size: 2.5rem;
   text-align: center;
   text-decoration: none;
-  color: white;
+  color: #58a6ff;
   width: 100%;
   display: inline-block;
+  letter-spacing: -1px; 
+  text-shadow: 3px 3px 0px #161b22; 
 }
 
 .logo:hover {
-  text-decoration: underline;
+  color: #ffffff;
+  text-decoration: none;
 }
 
 .buttons {
@@ -93,12 +96,14 @@ textarea {
 }
 
 .selection-container {
-  background-color: #2b2b2b; /* Match your theme */
-  padding: 10px 20px;
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 10px 20px;
   display: flex;
-  align-items: center;
   gap: 15px;
-  border-bottom: 1px solid #3d3d3d;
+  align-items: center;
 }
 
 .selection-container label {
@@ -118,14 +123,12 @@ textarea {
 }  
 
 #expiry {
-  background-color: #333333;
-  color: white;
-  border: 1px solid #444444;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-family: inherit;
-  cursor: pointer;
-  outline: none;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
 }
 
 /* Subtle hover effect for the dropdown */
@@ -137,4 +140,36 @@ textarea {
 #expiry option {
   background-color: #2b2b2b;
   color: white;
+}
+
+/* Style for the URL prefix text */
+.url-prefix {
+  color: #aaaaaa;
+  font-family: monospace;
+  margin-right: 5px;
+}
+
+/* Style for the new slug input field */
+#slug {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+#slug:focus {
+  border-color: #58a6ff;
+  outline: none;
+}
+
+/* Style for the error message */
+.error-message {
+  background-color: #3d2b2b; /* Dark red background */
+  color: #ff6b6b; /* Light red text */
+  padding: 10px 20px;
+  border-radius: 4px;
+  margin: 10px 20px;
+  border: 1px solid #5c3333;
 }

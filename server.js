@@ -1,18 +1,26 @@
 const express = require("express")
 const app = express()
+require('dotenv').config()
 app.set("view engine", "ejs")
 app.use(express.static("public"))
 app.use(express.urlencoded({ extended: true }))
 
 const Document = require("./models/Document")
 const mongoose = require("mongoose")
-mongoose.connect("mongodb://127.0.0.1:27017/wastebin")
+const dbURI = process.env.DATABASE_URL || "mongodb://127.0.0.1:27017/wastebin";
+mongoose.connect(dbURI)
+  .then(() => console.log("Connected to Skrappy Cloud Database"))
+  .catch(err => console.log("Connection error:", err))
 
 app.get("/", (req, res) => {
-  const code = `Welcome to WasteBin!
+  const code = `Welcome to Skrappy! 🤘
 
-Use the commands in the top right corner
-to create a new file to share with others.`
+The fast, disposable code-sharing tool.
+1. Paste your code.
+2. Choose your deletion policy.
+3. Share the custom URL.
+
+Everything here is temporary.`
 
   res.render("code-display", { code, language: "plaintext" })
 })
@@ -22,8 +30,9 @@ app.get("/new", (req, res) => {
 })
 
 app.post("/save", async (req, res) => {
-  const {value,expiry} = req.body
+  const {value,expiry,slug} = req.body;
   let expiresAt = null
+  let isBurn = false;
 
   if(expiry ==="1h")
   {
@@ -33,42 +42,55 @@ app.post("/save", async (req, res) => {
   {
     expiresAt = new Date(Date.now()+1000*60*60*24)
   }
+  else if (expiry === "burn") 
+  {
+    isBurn = true; 
+  }
 
+  const documentData = { value, expiresAt,isBurn,slug, viewCount: 0 };
+  if (slug) {
+    documentData.slug = slug;
+  }
   try 
   {
-    const document = await Document.create({ value , expiresAt, viewCount: 0 })
-    res.redirect(`/${document.id}`)
+    const document = await Document.create(documentData)
+    res.redirect(`/${document.slug}`)
   } 
-  catch (e) 
-  {
-    res.render("new", { value })
+  catch (e) {
+    // Check for a duplicate key error (code 11000) on the 'slug' field
+    if (e.code === 11000 && e.keyPattern && e.keyPattern.slug) {
+        // Re-render the page with an error message and the user's input
+        return res.render("new", { value, slug, errorMessage: "That URL is already taken. Please try another." })
+    }
+    // Handle other errors
+    console.error(e)
+    res.render("new", { value, slug, errorMessage: "An error occurred. Please try again." })
   }
 })
 
-/*app.get("/:id/duplicate", async (req, res) => {
-  const id = req.params.id
-  try {
-    const document = await Document.findById(id)
-    res.render("new", { value: document.value })
-  } catch (e) {
-    res.redirect(`/${id}`)
-  }
-})*/
 
-app.get("/:id", async (req, res) => {
-  const id = req.params.id
+app.get("/:slug", async (req, res) => {
+  const slug = req.params.slug
   try {
-    const document = await Document.findById(id)
+    // Find the document by its slug instead of its ID
+    const document = await Document.findOne({ slug })
 
-    //view counter incremet 
+    // If no document is found, redirect home
+    if (!document) {
+        return res.redirect("/")
+    }
+
+    // view counter increment
     document.viewCount +=1
     await document.save()
 
-    res.render("code-display", { code: document.value, id })
+    // Pass the slug as the 'id' for the buttons
+    res.render("code-display", { code: document.value, id: slug })
 
-    if(document.viewCount >=2){
-    await Document.findByIdAndDelete(id)
-    console.log(`Document ${id} deleted after 2nd view.`)
+    if(document.isBurn && document.viewCount >=2){
+      // Delete the document by its slug
+      await Document.findOneAndDelete({ slug })
+      console.log(`Document ${slug} deleted after 2nd view.`)
     }
   } catch (e) {
     res.redirect("/")
