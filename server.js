@@ -48,7 +48,7 @@ app.post("/save", async (req, res) => {
   }
 
   const documentData = { value, expiresAt,isBurn,slug, viewCount: 0 };
-  if (slug) {
+  if (slug && slug.trim()!== "") {
     documentData.slug = slug;
   }
   try 
