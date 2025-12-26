@@ -22,16 +22,30 @@ app.get("/new", (req, res) => {
 })
 
 app.post("/save", async (req, res) => {
-  const value = req.body.value
-  try {
-    const document = await Document.create({ value })
+  const {value,expiry} = req.body
+  let expiresAt = null
+
+  if(expiry ==="1h")
+  {
+    expiresAt = new Date(Date.now()+1000*60*60)
+  } 
+  else if (expiry ==="24h")
+  {
+    expiresAt = new Date(Date.now()+1000*60*60*24)
+  }
+
+  try 
+  {
+    const document = await Document.create({ value , expiresAt, viewCount: 0 })
     res.redirect(`/${document.id}`)
-  } catch (e) {
+  } 
+  catch (e) 
+  {
     res.render("new", { value })
   }
 })
 
-app.get("/:id/duplicate", async (req, res) => {
+/*app.get("/:id/duplicate", async (req, res) => {
   const id = req.params.id
   try {
     const document = await Document.findById(id)
@@ -39,16 +53,23 @@ app.get("/:id/duplicate", async (req, res) => {
   } catch (e) {
     res.redirect(`/${id}`)
   }
-})
+})*/
 
 app.get("/:id", async (req, res) => {
   const id = req.params.id
   try {
     const document = await Document.findById(id)
 
+    //view counter incremet 
+    document.viewCount +=1
+    await document.save()
+
     res.render("code-display", { code: document.value, id })
 
+    if(document.viewCount >=2){
     await Document.findByIdAndDelete(id)
+    console.log(`Document ${id} deleted after 2nd view.`)
+    }
   } catch (e) {
     res.redirect("/")
   }

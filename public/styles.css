@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap');
+
 body {
   background-color: #002b36;
   margin: 0;
@@ -51,6 +53,7 @@ textarea {
 }
 
 .logo {
+  font-family: 'Alfa Slab One', serif; 
   font-size: 2rem;
   text-align: center;
   text-decoration: none;
@@ -87,4 +90,51 @@ textarea {
 
 .btn:hover {
   background-color: #83E5FF;
+}
+
+.selection-container {
+  background-color: #2b2b2b; /* Match your theme */
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid #3d3d3d;
+}
+
+.selection-container label {
+  color: #efefef;
+  font-size: 0.9rem;
+  font-family: inherit;
+  margin-right: 15px;
+}
+
+.selection-container select {
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+  padding: 5px;
+  border-radius: 4px;
+  outline: none;
+}  
+
+#expiry {
+  background-color: #333333;
+  color: white;
+  border: 1px solid #444444;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Subtle hover effect for the dropdown */
+#expiry:hover {
+  border-color: #666666;
+}
+
+/* Style for the options inside the dropdown */
+#expiry option {
+  background-color: #2b2b2b;
+  color: white;
 }
