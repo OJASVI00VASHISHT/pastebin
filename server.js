@@ -87,7 +87,7 @@ app.get("/:slug", async (req, res) => {
     // Pass the slug as the 'id' for the buttons
     res.render("code-display", { code: document.value, id: slug })
 
-    if(document.isBurn && document.viewCount >=2){
+    if(document.isBurn && document.viewCount >=3){
       // Delete the document by its slug
       await Document.findOneAndDelete({ slug })
       console.log(`Document ${slug} deleted after 2nd view.`)
