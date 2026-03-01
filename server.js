@@ -30,43 +30,65 @@ app.get("/new", (req, res) => {
 })
 
 app.post("/save", async (req, res) => {
-  const {value,expiry,slug} = req.body;
-  let expiresAt = null
+  const { value, expiry, slug } = req.body;
+  let expiresAt = null;
   let isBurn = false;
 
-  if(expiry ==="1h")
-  {
-    expiresAt = new Date(Date.now()+1000*60*60)
-  } 
-  else if (expiry ==="24h")
-  {
-    expiresAt = new Date(Date.now()+1000*60*60*24)
-  }
-  else if (expiry === "burn") 
-  {
-    isBurn = true; 
+  if (expiry === "1h") {
+    expiresAt = new Date(Date.now() + 1000 * 60 * 60);
+  } else if (expiry === "24h") {
+    expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24);
+  } else if (expiry === "burn") {
+    isBurn = true;
   }
 
-  const documentData = { value, expiresAt,isBurn,slug, viewCount: 0 };
-  if (slug && slug.trim()!== "") {
+  // build the document data without blindly including `slug`
+  const documentData = { value, expiresAt, isBurn, viewCount: 0 };
+  if (slug && slug.trim() !== "") {
     documentData.slug = slug;
   }
-  try 
-  {
-    const document = await Document.create(documentData)
-    res.redirect(`/${document.slug}`)
-  } 
-  catch (e) {
-    // Check for a duplicate key error (code 11000) on the 'slug' field
-    if (e.code === 11000 && e.keyPattern && e.keyPattern.slug) {
-        // Re-render the page with an error message and the user's input
-        return res.render("new", { value, slug, errorMessage: "That URL is already taken. Please try another." })
+
+  try {
+    // if no custom slug is provided, the schema default will generate one.
+    // collisions on randomly generated ids are extremely unlikely, but we
+    // handle them by retrying the insert instead of surfacing an error to
+    // the user.  The unique index on `slug` ensures we don't store duplicates.
+    let document;
+    while (true) {
+      try {
+        document = await Document.create(documentData);
+        break; // success
+      } catch (err) {
+        // if the error is a duplicate slug and we didn't specify one,
+        // it means the auto-generated id collided -- try again
+        if (
+          err.code === 11000 &&
+          err.keyPattern &&
+          err.keyPattern.slug &&
+          !documentData.slug
+        ) {
+          // simply repeat the loop; mongoose will generate a new default
+          continue;
+        }
+        // otherwise rethrow so outer catch can handle it
+        throw err;
+      }
     }
-    // Handle other errors
-    console.error(e)
-    res.render("new", { value, slug, errorMessage: "An error occurred. Please try again." })
+
+    res.redirect(`/${document.slug}`);
+  } catch (e) {
+    // duplicate key on user-supplied slug
+    if (e.code === 11000 && e.keyPattern && e.keyPattern.slug) {
+      return res.render("new", {
+        value,
+        slug,
+        errorMessage: "That URL is already taken. Please try another.",
+      });
+    }
+    console.error(e);
+    res.render("new", { value, slug, errorMessage: "An error occurred. Please try again." });
   }
-})
+});
 
 
 app.get("/:slug", async (req, res) => {
