@@ -12,6 +12,12 @@
 </head>
 <body>
   <%- include("_buttons.ejs", { id: locals.id }) %>
+
+  <!-- copy-to-clipboard button shown when a paste is displayed -->
+  <div class="copy-container">
+    <button id="copyBtn" class="btn">Copy</button>
+  </div>
+
   <div class="wrapper">
     <div class="line-numbers">
       <% for (let i = 1; i <= code.split('\n').length; i++) { %>
@@ -23,5 +29,35 @@
       class="<%= locals.language ? `language-${locals.language}` : "" %>"
     ><%= code %></code></pre>
   </div>
+
+  <script>
+    const copyBtn = document.getElementById('copyBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const text = document.getElementById('code-display').innerText;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text)
+            .then(() => {
+              copyBtn.textContent = 'Copied!';
+              setTimeout(() => (copyBtn.textContent = 'Copy'), 1500);
+            })
+            .catch(err => {
+              console.error('copy failed', err);
+              alert('Failed to copy to clipboard');
+            });
+        } else {
+          // fallback for older browsers
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          copyBtn.textContent = 'Copied!';
+          setTimeout(() => (copyBtn.textContent = 'Copy'), 1500);
+        }
+      });
+    }
+  </script>
 </body>
 </html>
