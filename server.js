@@ -40,6 +40,10 @@ app.post("/save", async (req, res) => {
     expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24);
   } else if (expiry === "burn") {
     isBurn = true;
+    // always give a short fallback lifetime so forgotten burn pastes
+    // don't stay in the database forever; actual deletion on view is still
+    // handled in the GET route below.
+    expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 2); // 2 days
   }
 
   // build the document data without blindly including `slug`
@@ -103,16 +107,18 @@ app.get("/:slug", async (req, res) => {
     }
 
     // view counter increment
-    document.viewCount +=1
-    await document.save()
+    document.viewCount += 1;
+    await document.save();
 
     // Pass the slug as the 'id' for the buttons
-    res.render("code-display", { code: document.value, id: slug })
+    res.render("code-display", { code: document.value, id: slug });
 
-    if(document.isBurn && document.viewCount >=3){
-      // Delete the document by its slug
-      await Document.findOneAndDelete({ slug })
-      console.log(`Document ${slug} deleted after 2nd view.`)
+    // if this paste is a "burn" paste, remove it as soon as it has been
+    // viewed twice (i.e. viewCount reaches 2) – the TTL index will also
+    // clear it after the two‑day fallback.
+    if (document.isBurn && document.viewCount >= 2) {
+      await Document.findOneAndDelete({ slug });
+      console.log(`Document ${slug} deleted after second view.`);
     }
   } catch (e) {
     res.redirect("/")

@@ -10,7 +10,7 @@ that must be unique. The app keeps view counts and deletes burned snippets autom
 
 - Paste and share code quickly
 - Optional custom URL or auto-generated slug
-- Expiration policies (burn after 2nd view, 1 hour, 24 hours)
+- Expiration policies (burn after 2nd view or two days, 1 hour, 24 hours)
 - Copy-to-clipboard button on paste pages
 - Syntax highlighting using Highlight.js
 - Data stored in MongoDB with automatic expiration
@@ -49,6 +49,8 @@ that must be unique. The app keeps view counts and deletes burned snippets autom
   hyphens/underscores to choose your own.
 - After saving, you'll be redirected to the paste; click the **Copy** button to
   copy the contents to your clipboard.
+- Burn‑after‑view pastes are removed when viewed twice; if nobody ever clicks
+  the link they will be automatically purged after two days.
 
 ## Deployment
 
