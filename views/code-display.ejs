@@ -14,7 +14,7 @@
   <meta property="og:description" content="<%= description || 'Paste and share code snippets quickly.' %>">
   <meta property="og:type" content="article">
   <meta property="og:url" content="<%= canonical || '' %>">
-  <meta property="og:image" content="<%= ogImage || '/assets/preview.png' %>">
+  <meta property="og:image" content="<%= (typeof ogImage !== 'undefined' && ogImage) ? ogImage : '/assets/preview.png' %>">
 
   <!-- Twitter card -->
   <meta name="twitter:card" content="summary_large_image">
