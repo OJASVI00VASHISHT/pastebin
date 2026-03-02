@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://skrappy.onrender.com/sitemap.xml

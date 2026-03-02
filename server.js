@@ -1,7 +1,12 @@
 const express = require("express")
 const app = express()
 require('dotenv').config()
+const helmet = require('helmet')
+const compression = require('compression')
+
 app.set("view engine", "ejs")
+app.use(helmet())
+app.use(compression())
 app.use(express.static("public"))
 app.use(express.urlencoded({ extended: true }))
 
@@ -21,12 +26,26 @@ The fast, disposable code-sharing tool.
 3. Share the custom URL.
 
 Everything here is temporary.`
+  const canonical = req.protocol + '://' + req.get('host') + req.originalUrl;
 
-  res.render("code-display", { code, language: "plaintext" })
+  res.render("code-display", {
+    code,
+    language: "plaintext",
+    title: 'Skrappy – share code fast',
+    description: 'A lightweight, temporary pastebin for sharing code snippets quickly.',
+    canonical,
+    request: req
+  })
 })
 
 app.get("/new", (req, res) => {
-  res.render("new")
+  const canonical = req.protocol + '://' + req.get('host') + req.originalUrl;
+  res.render("new", {
+    title: 'Create a new paste',
+    description: 'Type or paste your code and get a shareable link instantly.',
+    canonical,
+    request: req
+  })
 })
 
 app.post("/save", async (req, res) => {
@@ -110,8 +129,21 @@ app.get("/:slug", async (req, res) => {
     document.viewCount += 1;
     await document.save();
 
+    // build meta values
+    const canonical = req.protocol + '://' + req.get('host') + req.originalUrl;
+    const snippet = document.value.replace(/\s+/g, ' ').trim().slice(0, 150);
+    const title = `Paste ${slug}`;
+    const description = snippet.length < document.value.length ? snippet + '…' : snippet;
+
     // Pass the slug as the 'id' for the buttons
-    res.render("code-display", { code: document.value, id: slug });
+    res.render("code-display", {
+      code: document.value,
+      id: slug,
+      title,
+      description,
+      canonical,
+      request: req
+    });
 
     // if this paste is a "burn" paste, remove it as soon as it has been
     // viewed twice (i.e. viewCount reaches 2) – the TTL index will also
@@ -124,5 +156,9 @@ app.get("/:slug", async (req, res) => {
     res.redirect("/")
   }
 })
+
+// sitemap route (make sure file exists)
+const sitemapRouter = require('./routes/sitemap');
+app.use(sitemapRouter);
 
 app.listen(3000)

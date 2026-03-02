@@ -4,9 +4,24 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title><%= title || 'Skrappy | Share Code Fast' %></title>
+  <meta name="description" content="<%= description || '' %>">
+  <% if (canonical) { %><link rel="canonical" href="<%= canonical %>"><% } %>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="<%= title || 'Skrappy' %>">
+  <meta property="og:description" content="<%= description || '' %>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= canonical || '' %>">
+
+  <!-- Twitter card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= title || 'Skrappy' %>">
+  <meta name="twitter:description" content="<%= description || '' %>">
+
   <link rel="stylesheet" href="/styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/5.0.0/autosize.min.js" integrity="sha512-zibtOTbkMuTivXGk5b8yJFGLIB1jF90NuV7gwNcVWL3xZx/I1HdkXU2pCZhadsuaS5HMUzabvRqK4WmWeKrwUg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <title>Skrappy | Share Code Fast</title>
 </head>
 <body>
   <form action="/save" method="POST">

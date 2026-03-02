@@ -4,11 +4,27 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title><%= title || 'Skrappy | Share Code Fast' %></title>
+  <meta name="description" content="<%= description || 'Paste and share code snippets quickly.' %>">
+  <% if (canonical) { %><link rel="canonical" href="<%= canonical %>"><% } %>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="<%= title || 'Skrappy' %>">
+  <meta property="og:description" content="<%= description || 'Paste and share code snippets quickly.' %>">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="<%= canonical || '' %>">
+  <meta property="og:image" content="<%= ogImage || '/assets/preview.png' %>">
+
+  <!-- Twitter card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= title || 'Skrappy' %>">
+  <meta name="twitter:description" content="<%= description || '' %>">
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/styles/base16/solarized-dark.min.css" integrity="sha512-JPpsArcPmVD/lHCCuZeG6Kx4x2qURRXHXxKYaXYJiKEKaoLOcXKDYqQ4jSeauXbk+U6uZ1UzrGO85y+lpys0Og==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script>hljs.highlightAll();</script>
   <link rel="stylesheet" href="/styles.css" />
-  <title>Skrappy | Share Code Fast</title>
 </head>
 <body>
   <%- include("_buttons.ejs", { id: locals.id }) %>
@@ -26,6 +42,17 @@
     ><%= code %></code></pre>
   </div>
 
+  <% if (locals.id) { %>
+  <script type="application/ld+json">
+  <%= JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "headline": title || (`Paste ${locals.id}`),
+    "description": description || '',
+    "url": canonical || (request && request.protocol + '://' + request.get('host') + request.originalUrl),
+  }) %>
+  </script>
+  <% } %>
   <script>
     const copyBtn = document.getElementById('copyBtn');
     if (copyBtn) {
