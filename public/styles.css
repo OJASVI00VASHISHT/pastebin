@@ -197,21 +197,35 @@ textarea {
    ========================= */
 @media (max-width: 768px) {
 
-  /* Stack code + line numbers vertically */
+  /* Keep line numbers and code side-by-side on narrow screens */
   .wrapper {
-    flex-direction: column;
+    flex-direction: row;
     padding: 0.5rem;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 
-  /* Line numbers above code instead of side-by-side */
+  /* Line numbers to the left of the code */
   .line-numbers {
-    text-align: left;
-    margin-bottom: 0.5rem;
+    text-align: end;
+    margin: 0 0.5rem 0 0;
+    min-width: 2.25rem;
+    color: #9aa9b0;
+    font-family: monospace;
+    user-select: none;
+  }
+
+  /* Make code area flexible and allow horizontal scrolling */
+  pre, #code-display {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    font-size: 0.95rem;
   }
 
   textarea {
     margin-left: 0;
-    min-height: 70vh;
+    min-height: 60vh;
     font-size: 0.9rem;
   }
 
