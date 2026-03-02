@@ -20,6 +20,23 @@ pre {
   padding-bottom: 0;
 }
 
+/* Ensure code and line numbers are readable on dark backgrounds */
+pre, #code-display, .wrapper {
+  color: #c9d1d9;
+  font-family: monospace;
+}
+
+#code-display {
+  white-space: pre-wrap;
+  font-size: 1rem;
+}
+
+pre {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
 .line-numbers {
   color: #7D7D7D;
   font-family: monospace;

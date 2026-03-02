@@ -19,7 +19,7 @@ that must be unique. The app keeps view counts and deletes burned snippets autom
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/pastebin.git
+   git clone https://github.com/OJASVI00VASHISHT/pastebin.git
    cd pastebin
    ```
 2. Install dependencies:
