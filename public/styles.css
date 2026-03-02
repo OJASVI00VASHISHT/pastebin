@@ -38,17 +38,6 @@ textarea {
   outline: none;
 }
 
-/* copy button container shown on shared paste pages */
-.copy-container {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 1000;
-}
-.copy-container .btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-}
 
 .buttons-wrapper {
   position: fixed;

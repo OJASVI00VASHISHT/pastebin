@@ -5,5 +5,9 @@
     <% if (locals.canSave) { %>
       <button class="btn" type="submit">Save</button>
     <% } %>
+    <% if (locals.id) { %>
+      <!-- copy button for paste display pages -->
+      <button id="copyBtn" class="btn">Copy</button>
+    <% } %>
   </div>
 </div>

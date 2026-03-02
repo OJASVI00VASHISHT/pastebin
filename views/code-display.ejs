@@ -13,12 +13,6 @@
 <body>
   <%- include("_buttons.ejs", { id: locals.id }) %>
 
-  <!-- copy-to-clipboard button should only show on a real paste page -->
-  <% if (locals.id) { %>
-    <div class="copy-container">
-      <button id="copyBtn" class="btn">Copy</button>
-    </div>
-  <% } %>
 
   <div class="wrapper">
     <div class="line-numbers">
